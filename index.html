@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Elite - Premium Household Services</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* === BASE THEME & VARIABLES === */
+        :root {
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --secondary: #ec4899;
+            --bg-color: #0f172a;
+            --surface: #1e293b;
+            --surface-glass: rgba(30, 41, 59, 0.85);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+
+            --orange: #f97316;
+            --blue: #3b82f6;
+            --teal: #14b8a6;
+            --purple: #a855f7;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-color), #09090b);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* === APP CONTAINER === */
+        #app {
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            max-height: 900px;
+            background: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        @media (min-width: 450px) {
+            #app {
+                height: 95vh;
+                border-radius: 30px;
+                border: 1px solid var(--border);
+            }
+        }
+
+        /* === SCREEN MANAGEMENT === */
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
+                var(--bg-color);
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* === HEADERS === */
+        header {
+            padding: 30px 25px 20px;
+            background: transparent;
+            position: relative;
+            z-index: 10;
+        }
+
+        .dashboard-header {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        h2 {
+            font-size: 28px;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 5px;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .back-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--border);
+        }
+
+        /* === SCROLLABLE CONTENT === */
+        .scrollable {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 25px 30px;
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .scrollable::-webkit-scrollbar {
+            display: none;
+            /* Chrome */
+        }
+
+        .pb-100 {
+            padding-bottom: 100px;
+        }
+
+        /* === UI ELEMENTS === */
+        .glass-card,
+        .form-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .centered-card {
+            margin: auto;
+            width: 90%;
+        }
+
+        .input-group {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px var(--primary-glow);
+        }
+
+        .input-group i {
+            color: var(--text-muted);
+        }
+
+        .input-group input,
+        .input-group textarea {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            box-shadow: 0 8px 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px var(--primary-glow);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            background: var(--surface);
+            color: var(--text-muted);
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-primary.outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            box-shadow: none;
+        }
+
+        /* === LOGIN SPECIFIC === */
+        .logo-box {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 25px var(--primary-glow);
+        }
+
+        .wave {
+            display: inline-block;
+            animation: wave 2.5s infinite;
+            transform-origin: 70% 70%;
+        }
+
+        @keyframes wave {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            10% {
+                transform: rotate(14deg);
+            }
+
+            20% {
+                transform: rotate(-8deg);
+            }
+
+            30% {
+                transform: rotate(14deg);
+            }
+
+            40% {
+                transform: rotate(-4deg);
+            }
+
+            50% {
+                transform: rotate(10deg);
+            }
+
+            60% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+
+        /* === DASHBOARD SERVICES === */
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .service-card {
+            background: var(--surface-glass);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .service-card:hover {
+            background: var(--surface);
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin: 0 auto 15px;
+            color: white;
+        }
+
+        .bg-orange {
+            background: linear-gradient(135deg, var(--orange), #fcd34d);
+            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+        }
+
+        .bg-blue {
+            background: linear-gradient(135deg, var(--blue), #60a5fa);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .bg-teal {
+            background: linear-gradient(135deg, var(--teal), #34d399);
+            box-shadow: 0 8px 20px rgba(20, 184, 166, 0.3);
+        }
+
+        .bg-purple {
+            background: linear-gradient(135deg, var(--purple), #c084fc);
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .service-card h3 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .service-card p {
+            font-size: 12px;
+        }
+
+        /* === MAP === */
+        .map-container {
+            flex: 1;
+            position: relative;
+            border-radius: 24px 24px 0 0;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .location-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            z-index: 1000;
+            border-radius: 24px 24px 0 0;
+        }
+
+        .location-details {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* === SERVICE SECTIONS === */
+        .segment-control {
+            display: flex;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .segment-item {
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .segment-item input {
+            display: none;
+        }
+
+        .segment-btn {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: 0.3s;
+        }
+
+        .segment-item input:checked+.segment-btn {
+            background: var(--surface);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .counter-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            padding: 15px 20px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .number-input {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 5px;
+        }
+
+        .number-input button {
+            background: var(--surface-glass);
+            border: none;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .number-input input {
+            width: 30px;
+            text-align: center;
+            background: transparent;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .custom-select {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 15px;
+            border-radius: 16px;
+            font-family: inherit;
+            outline: none;
+            appearance: none;
+        }
+
+        .slot-group {
+            position: relative;
+        }
+
+        .slot-group::after {
+            content: '\f078';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 20px;
+            bottom: 15px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .price-estimate {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-top: 1px dashed var(--border);
+        }
+
+        .price-val {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--success);
+        }
+
+        .text-muted {
+            color: var(--text-muted);
+        }
+
+        .mt-15 {
+            margin-top: 15px;
+        }
+
+        .mt-20 {
+            margin-top: 20px;
+        }
+
+        .mt-30 {
+            margin-top: 30px;
+        }
+
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+
+        .mb-20 {
+            margin-bottom: 20px;
+        }
+
+        /* Checkbox items */
+        .check-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .check-item:has(input:checked) {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .check-content h4 {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .price-badge {
+            display: inline-block;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            padding: 2px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        /* CART */
+        .icon-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--danger);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .cart-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .cart-item-meta {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .cart-item-price {
+            font-weight: 800;
+            color: var(--success);
+            font-size: 18px;
+            text-align: right;
+        }
+
+        .remove-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .bottom-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 20px 25px 30px;
+            background: var(--surface-glass);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border);
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .total-row h2 {
+            color: var(--success);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .empty-icon {
+            font-size: 50px;
+            color: var(--border);
+            margin-bottom: 20px;
+        }
+
+        /* PAYMENT */
+        .pay-amt-box {
+            text-align: center;
+            padding: 20px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px;
+            margin-bottom: 30px;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .pay-method-card {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .pay-method-card.active {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .pay-method-card input {
+            display: none;
+        }
+
+        .pay-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+            font-size: 20px;
+        }
+
+        .pay-icon.phonepe {
+            background: rgba(168, 85, 247, 0.2);
+            color: var(--purple);
+        }
+
+        .check-circle {
+            margin-left: auto;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            font-size: 12px;
+        }
+
+        .pay-method-card.active .check-circle {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .qr-container {
+            text-align: center;
+        }
+
+        .qr-box {
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .qr-code-img {
+            width: 180px;
+            height: 180px;
+            display: block;
+        }
+
+        /* FEEDBACK */
+        .feedback-icon-top {
+            font-size: 40px;
+            color: var(--warning);
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .rating-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .box-style {
+            background: var(--surface);
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .rating-group p {
+            font-weight: 500;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .stars {
+            display: flex;
+            gap: 10px;
+            color: var(--border);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .stars .star-btn.active {
+            color: var(--warning);
+        }
+
+        /* THANK YOU SECTION */
+        .thankyou-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            padding: 40px;
+        }
+
+        .thankyou-img {
+            width: 220px;
+            height: 220px;
+            object-fit: contain;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(3deg);
+            }
+
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+        }
+
+        /* POPUP */
+        .popup-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-box {
+            background: var(--surface);
+            padding: 30px 25px;
+            border-radius: 24px;
+            text-align: center;
+            width: 85%;
+            border: 1px solid var(--border);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--success);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        /* TOAST */
+        .toast {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 3000;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            transition: 0.3s;
+        }
+
+        .toast.show {
+            animation: slideDown 0.3s forwards;
+        }
+
+        @keyframes slideDown {
+            0% {
+                top: -50px;
+                opacity: 0;
+            }
+
+            100% {
+                top: 20px;
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- APP CONTAINER -->
+    <div id="app">
+
+        <!-- 1. LOGIN SECTION -->
+        <section id="login-section" class="screen active">
+            <div class="glass-card centered-card">
+                <div class="logo-box">
+                    <div class="logo-icon"><i class="fa-solid fa-crown"></i></div>
+                    <h1>Elite</h1>
+                    <p>Elite Household Services</p>
+                </div>
+                <form id="login-form">
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="text" id="username" placeholder="Email / Phone Number" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="password" placeholder="Secure Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary glow-btn">Secure Login <i
+                            class="fa-solid fa-arrow-right"></i></button>
+                    <div class="login-footer mt-20 text-center">
+                        <p class="text-muted">Don't have an account? <a href="#"
+                                onclick="app.navigate('register-section')"
+                                style="color: var(--primary); text-decoration: none; font-weight: 600;">Create an
+                                Account</a></p>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 1b. REGISTER SECTION -->
+        <section id="register-section" class="screen">
+            <div class="glass-card centered-card" style="margin-top: 10%;">
+                <div class="logo-box">
+                    <div class="logo-icon"><i class="fa-solid fa-user-plus"></i></div>
+                    <h2>Create Account</h2>
+                    <p>Join Elite Services</p>
+                </div>
+                <form id="register-form">
+                    <div class="input-group">
+                        <i class="fa-solid fa-font"></i>
+                        <input type="text" id="reg-name" placeholder="Full Name" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="reg-email" placeholder="Email Address" required>
+                    </div>
+                    <div class="input-group">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="reg-password" placeholder="Create Password" required>
+                    </div>
+                    <button type="submit" class="btn-primary glow-btn">Sign Up <i
+                            class="fa-solid fa-check"></i></button>
+                    <div class="login-footer mt-20 text-center">
+                        <p class="text-muted">Already have an account? <a href="#"
+                                onclick="app.navigate('login-section')"
+                                style="color: var(--primary); text-decoration: none; font-weight: 600;">Login</a></p>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- 2. LOCATION SECTION -->
+        <section id="location-section" class="screen">
+            <header>
+                <h2>📍 Service Location</h2>
+                <p>Set your location to find professionals</p>
+            </header>
+            <div class="scrollable"
+                style="display: flex; flex-direction: column; align-items: center; padding-top:20px;">
+                <div class="glass-card" style="text-align: center; width:100%;">
+                    <button class="btn-primary mb-20 glow-btn"
+                        style="background: linear-gradient(135deg, #a2d2ff, #3b82f6); color: #0f172a;"
+                        onclick="app.detectLocation()">
+                        <i class="fa-regular fa-compass"></i> Use Current Location
+                    </button>
+
+                    <div id="detected-address" class="mb-20"
+                        style="background: rgba(16, 185, 129, 0.1); padding: 15px; border-radius: 16px; border: 1px solid rgba(16, 185, 129, 0.3); display: none;">
+                    </div>
+
+                    <p class="text-muted mb-20 mt-15">-- OR Select manually --</p>
+
+                    <select id="user-location" class="custom-select mb-20">
+                        <option value="" disabled selected>Select manually...</option>
+                        <option>Mumbai</option>
+                        <option>Delhi</option>
+                        <option>Bangalore</option>
+                        <option>Hyderabad</option>
+                        <option>Guntur</option>
+                        <option>Vijayawada</option>
+                    </select>
+
+                    <button class="btn-primary mt-30 glow-btn"
+                        style="background: linear-gradient(135deg, #ff85a2, #ec4899);" onclick="app.continueNext()">
+                        Continue <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SERVICES DASHBOARD -->
+        <section id="services-section" class="screen">
+            <header class="dashboard-header">
+                <div class="header-top">
+                    <div>
+                        <h2>Hello, User <span class="wave">👋</span></h2>
+                        <p>What do you need help with?</p>
+                    </div>
+                    <div class="nav-actions" style="display: flex; gap: 10px;">
+                        <button class="icon-btn" onclick="app.resetApp()" style="background: rgba(239, 68, 68, 0.1); color: var(--danger); border-color: rgba(239, 68, 68, 0.3);" title="Logout">
+                            <i class="fa-solid fa-right-from-bracket"></i>
+                        </button>
+                        <button id="btn-view-cart" class="icon-btn" onclick="app.navigate('cart-section')">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span id="cart-badge" class="badge hidden">0</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+            <div class="menu-content scrollable mt-20">
+                <div class="services-grid">
+                    <div class="service-card" onclick="app.navigate('cooking-section')">
+                        <div class="icon-wrapper bg-orange"><i class="fa-solid fa-fire-burner"></i></div>
+                        <h3>Home Cooking</h3>
+                        <p>Chef at your doorstep</p>
+                    </div>
+                    <div class="service-card" onclick="app.navigate('laundry-section')">
+                        <div class="icon-wrapper bg-blue"><i class="fa-solid fa-shirt"></i></div>
+                        <h3>Laundry</h3>
+                        <p>Wash, iron & fold</p>
+                    </div>
+                    <div class="service-card" onclick="app.navigate('cleaning-section')">
+                        <div class="icon-wrapper bg-teal"><i class="fa-solid fa-broom"></i></div>
+                        <h3>Cleaning</h3>
+                        <p>Sparkling clean home</p>
+                    </div>
+                    <div class="service-card" onclick="app.navigate('plumbing-section')">
+                        <div class="icon-wrapper bg-purple"><i class="fa-solid fa-wrench"></i></div>
+                        <h3>Plumbing</h3>
+                        <p>Expert pipe fixes</p>
+                    </div>
+                </div>
+
+                <!-- RECENT REVIEWS SECTION -->
+                <div id="reviews-container" class="mt-30 pb-100">
+                    <h3 class="mb-15" style="display: flex; align-items: center; gap: 10px;">
+                        Recent Reviews <i class="fa-solid fa-star" style="color:var(--warning)"></i>
+                    </h3>
+                    <div id="reviews-list" style="display: flex; flex-direction: column; gap: 15px;">
+                        <!-- Feedback cards will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4a. COOKING SECTION -->
+        <section id="cooking-section" class="screen sub-service">
+            <header>
+                <button class="back-btn" onclick="app.navigate('services-section')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>Cooking Service</h2>
+            </header>
+            <div class="scrollable">
+                <div class="form-card">
+                    <div class="input-group">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="cooking-search" placeholder="E.g., Biryani, Healthy Meals">
+                    </div>
+
+                    <div class="segment-control mt-15">
+                        <label class="segment-item">
+                            <input type="radio" name="food-type" value="Veg" checked>
+                            <div class="segment-btn"><i class="fa-solid fa-leaf text-green"></i> Veg Only</div>
+                        </label>
+                        <label class="segment-item">
+                            <input type="radio" name="food-type" value="Non-Veg">
+                            <div class="segment-btn"><i class="fa-solid fa-drumstick-bite text-red"></i> Non-Veg</div>
+                        </label>
+                    </div>
+
+                    <div class="counter-group mt-20">
+                        <label>Serving for (People):</label>
+                        <div class="number-input">
+                            <button onclick="app.updateMembers(-1)"><i class="fa-solid fa-minus"></i></button>
+                            <input type="text" id="member-count" value="1" readonly>
+                            <button onclick="app.updateMembers(1)"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="slot-group mt-20">
+                        <label>Preferred Slot:</label>
+                        <select id="cooking-slot" class="custom-select mt-10">
+                            <option value="Morning">Morning (8 AM - 11 AM)</option>
+                            <option value="Afternoon">Afternoon (12 PM - 3 PM)</option>
+                            <option value="Evening">Evening (6 PM - 9 PM)</option>
+                        </select>
+                    </div>
+
+                    <div class="price-estimate mt-20">
+                        <div><span class="text-muted">Calculated Price</span></div>
+                        <span id="cooking-price" class="price-val">₹150</span>
+                    </div>
+                    <button class="btn-primary mt-15" onclick="app.addToCart('Cooking')">Add Component to Cart</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4b. LAUNDRY SECTION -->
+        <section id="laundry-section" class="screen sub-service">
+            <header>
+                <button class="back-btn" onclick="app.navigate('services-section')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>Laundry Service</h2>
+            </header>
+            <div class="scrollable">
+                <div class="form-card">
+                    <div class="counter-group">
+                        <label>Approximate Load (kg):</label>
+                        <div class="number-input">
+                            <button onclick="app.updateLaundry(-1)"><i class="fa-solid fa-minus"></i></button>
+                            <input type="text" id="laundry-count" value="1" readonly>
+                            <button onclick="app.updateLaundry(1)"><i class="fa-solid fa-plus"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="slot-group mt-20">
+                        <label>Pickup & Delivery Slot:</label>
+                        <select id="laundry-slot" class="custom-select mt-10">
+                            <option value="Morning">Morning</option>
+                            <option value="Afternoon">Afternoon</option>
+                            <option value="Evening">Evening</option>
+                        </select>
+                    </div>
+
+                    <div class="price-estimate mt-20">
+                        <div><span class="text-muted">Calculated Price</span></div>
+                        <span id="laundry-price" class="price-val">₹40</span>
+                    </div>
+                    <button class="btn-primary mt-15" onclick="app.addToCart('Laundry')">Add Component to Cart</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4c. CLEANING SECTION -->
+        <section id="cleaning-section" class="screen sub-service">
+            <header>
+                <button class="back-btn" onclick="app.navigate('services-section')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>Cleaning Service</h2>
+            </header>
+            <div class="scrollable">
+                <div class="form-card">
+                    <p class="text-muted mb-10">Select exactly what you need done:</p>
+
+                    <div class="checkbox-list">
+                        <label class="check-item">
+                            <div class="check-content">
+                                <h4>Floor Sweeping & Mopping</h4>
+                                <span class="price-badge">₹100</span>
+                            </div>
+                            <input type="checkbox" class="cleaning-task custom-checkbox" value="Floor Sweeping/Mopping"
+                                data-price="100" onchange="app.calcCleaning()">
+                        </label>
+                        <label class="check-item">
+                            <div class="check-content">
+                                <h4>Cleaning Windows</h4>
+                                <span class="price-badge">₹75</span>
+                            </div>
+                            <input type="checkbox" class="cleaning-task custom-checkbox" value="Cleaning Windows"
+                                data-price="75" onchange="app.calcCleaning()">
+                        </label>
+                        <label class="check-item">
+                            <div class="check-content">
+                                <h4>Decorating Home</h4>
+                                <span class="price-badge">₹250</span>
+                            </div>
+                            <input type="checkbox" class="cleaning-task custom-checkbox" value="Decorating Home"
+                                data-price="250" onchange="app.calcCleaning()">
+                        </label>
+                    </div>
+
+                    <div class="slot-group mt-20">
+                        <label>Preferred Slot:</label>
+                        <select id="cleaning-slot" class="custom-select mt-10">
+                            <option value="Morning">Morning</option>
+                            <option value="Afternoon">Afternoon</option>
+                            <option value="Evening">Evening</option>
+                        </select>
+                    </div>
+
+                    <div class="price-estimate mt-20">
+                        <div><span class="text-muted">Total for Selected</span></div>
+                        <span id="cleaning-price" class="price-val">₹0</span>
+                    </div>
+                    <button class="btn-primary mt-15" id="btn-add-cleaning" onclick="app.addToCart('Cleaning')"
+                        disabled>Add Items to Cart</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4d. PLUMBING SECTION -->
+        <section id="plumbing-section" class="screen sub-service">
+            <header>
+                <button class="back-btn" onclick="app.navigate('services-section')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>Plumbing Service</h2>
+            </header>
+            <div class="scrollable">
+                <div class="form-card">
+                    <p class="text-muted mb-10">Choose from expert fixes:</p>
+
+                    <div class="checkbox-list">
+                        <label class="check-item">
+                            <div class="check-content">
+                                <h4>Fix leaking taps and pipes</h4>
+                                <span class="price-badge">₹80</span>
+                            </div>
+                            <input type="checkbox" class="plumbing-task custom-checkbox" value="Fix leaking taps"
+                                data-price="80" onchange="app.calcPlumbing()">
+                        </label>
+                        <label class="check-item">
+                            <div class="check-content">
+                                <h4>Unclog blocked drains</h4>
+                                <span class="price-badge">₹120</span>
+                            </div>
+                            <input type="checkbox" class="plumbing-task custom-checkbox" value="Unclog drains"
+                                data-price="120" onchange="app.calcPlumbing()">
+                        </label>
+                        <label class="check-item">
+                            <div class="check-content">
+                                <h4>Install sinks, showers</h4>
+                                <span class="price-badge">₹200</span>
+                            </div>
+                            <input type="checkbox" class="plumbing-task custom-checkbox" value="Install fixtures"
+                                data-price="200" onchange="app.calcPlumbing()">
+                        </label>
+                        <label class="check-item">
+                            <div class="check-content">
+                                <h4>Repair/Install water heaters</h4>
+                                <span class="price-badge">₹180</span>
+                            </div>
+                            <input type="checkbox" class="plumbing-task custom-checkbox" value="Water Heaters"
+                                data-price="180" onchange="app.calcPlumbing()">
+                        </label>
+                        <label class="check-item">
+                            <div class="check-content">
+                                <h4>Maintain water supply</h4>
+                                <span class="price-badge">₹150</span>
+                            </div>
+                            <input type="checkbox" class="plumbing-task custom-checkbox" value="Maintain Supply"
+                                data-price="150" onchange="app.calcPlumbing()">
+                        </label>
+                    </div>
+
+                    <div class="slot-group mt-20">
+                        <label>Service Slot:</label>
+                        <select id="plumbing-slot" class="custom-select mt-10">
+                            <option value="Morning">Morning</option>
+                            <option value="Afternoon">Afternoon</option>
+                            <option value="Evening">Evening</option>
+                        </select>
+                    </div>
+
+                    <div class="price-estimate mt-20">
+                        <div><span class="text-muted">Total for Selected</span></div>
+                        <span id="plumbing-price" class="price-val">₹0</span>
+                    </div>
+                    <button class="btn-primary mt-15" id="btn-add-plumbing" onclick="app.addToCart('Plumbing')"
+                        disabled>Add to Cart</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. CART SECTION -->
+        <section id="cart-section" class="screen">
+            <header>
+                <button class="back-btn" onclick="app.navigate('services-section')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>My Bookings</h2>
+            </header>
+            <div class="scrollable pb-100">
+                <div id="cart-items-container">
+                    <!-- Items populated via JS -->
+                </div>
+
+                <div id="empty-cart-msg" class="empty-state">
+                    <div class="empty-icon"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <h3>Your cart is empty</h3>
+                    <p class="text-muted mt-10">Looks like you haven't added any services yet.</p>
+                    <button class="btn-primary outline mt-15" onclick="app.navigate('services-section')">Browse
+                        Services</button>
+                </div>
+            </div>
+
+            <div class="bottom-bar hidden" id="cart-summary">
+                <div class="total-row">
+                    <span class="text-muted">Grand Total</span>
+                    <h2 id="cart-total-amount">₹0</h2>
+                </div>
+                <button class="btn-primary" onclick="app.navigate('payment-section')">Checkout Securely</button>
+            </div>
+        </section>
+
+        <!-- 6. PAYMENT SECTION -->
+        <section id="payment-section" class="screen">
+            <header>
+                <button class="back-btn" onclick="app.navigate('cart-section')"><i
+                        class="fa-solid fa-arrow-left"></i></button>
+                <h2>Payment</h2>
+            </header>
+            <div class="scrollable">
+                <div class="form-card glass-card">
+                    <div class="pay-amt-box">
+                        <span>Total to Pay</span>
+                        <h2 id="pay-total-amount" class="text-gradient" style="font-size:32px;">₹0</h2>
+                    </div>
+
+                    <h4 class="mt-20 mb-10">Select Payment Mode</h4>
+                    <div class="payment-methods">
+                        <label class="pay-method-card active" id="label-pay-cash">
+                            <input type="radio" name="payment-mode" value="cash" checked
+                                onchange="app.handlePaymentMode()">
+                            <div class="pay-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+                            <span>Cash on Service</span>
+                            <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+                        </label>
+                        <label class="pay-method-card" id="label-pay-upi">
+                            <input type="radio" name="payment-mode" value="upi" onchange="app.handlePaymentMode()">
+                            <div class="pay-icon phonepe"><i class="fa-solid fa-mobile-screen"></i></div>
+                            <span>PhonePe / UPI</span>
+                            <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+                        </label>
+                    </div>
+
+                    <div id="qr-code-section" class="qr-container hidden mt-20">
+                        <div class="qr-box">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PaymentToElite"
+                                alt="QR Code" class="qr-code-img">
+                        </div>
+                        <p class="text-muted mt-10">Scan using any UPI app</p>
+                    </div>
+
+                    <button class="btn-primary mt-20" onclick="app.processPayment()">Complete Booking</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. FEEDBACK SECTION -->
+        <section id="feedback-section" class="screen">
+            <header>
+                <h2>Feedback</h2>
+            </header>
+            <div class="scrollable">
+                <div class="glass-card text-center mb-20">
+                    <div class="feedback-icon-top"><i class="fa-solid fa-star-half-stroke"></i></div>
+                    <h3 class="mb-20">We value your Feedback!</h3>
+
+                    <div class="rating-group box-style">
+                        <p>1. Rating for the work</p>
+                        <div class="stars" data-group="work">
+                            <i class="fa-solid fa-star star-btn" data-val="1"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="2"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="3"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="4"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="5"></i>
+                        </div>
+                    </div>
+
+                    <div class="rating-group box-style">
+                        <p>2. Were you satisfied?</p>
+                        <div class="stars" data-group="satisfaction">
+                            <i class="fa-solid fa-star star-btn" data-val="1"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="2"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="3"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="4"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="5"></i>
+                        </div>
+                    </div>
+
+                    <div class="rating-group box-style">
+                        <p>3. Rating the app</p>
+                        <div class="stars" data-group="app">
+                            <i class="fa-solid fa-star star-btn" data-val="1"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="2"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="3"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="4"></i>
+                            <i class="fa-solid fa-star star-btn" data-val="5"></i>
+                        </div>
+                    </div>
+
+                    <div class="input-group mt-20" style="align-items: flex-start;">
+                        <textarea id="feedback-remarks" placeholder="Any further remarks or suggestions?"
+                            rows="3"></textarea>
+                    </div>
+
+                    <button class="btn-primary mt-20" onclick="app.submitFeedback()">Submit Review</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. THANK YOU SECTION -->
+        <section id="thankyou-section" class="screen">
+            <div class="thankyou-card glass-card text-center" style="margin:20px; border-radius: 30px;">
+                <img src="c:\Users\DELL\Downloads\thank you.jpeg"
+                    alt="Cute Thank You Character" class="thankyou-img">
+                <h2 class="text-gradient mt-20" style="font-size:36px;">Thank You!</h2>
+                <p class="text-muted mt-10">Have a great day. We appreciate your trust in Elite services.</p>
+                <button class="btn-primary outline mt-30" onclick="app.resetApp()">Go to Home</button>
+            </div>
+        </section>
+
+        <!-- Overlay Popups -->
+        <div id="payment-popup" class="popup-overlay hidden">
+            <div class="popup-box">
+                <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+                <h2 class="mt-15">Success!</h2>
+                <p class="text-muted mt-10">Your service is confirmed.</p>
+                <button class="btn-primary mt-20" onclick="app.closePaymentPopup()">Give Feedback</button>
+            </div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div id="toast" class="toast hidden">
+            <i class="fa-solid fa-circle-check"></i>
+            <span id="toast-msg">Item added</span>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // === APPLICATION LOGIC ===
+        const app = {
+            cart: [],
+            currentScreen: 'login-section',
+
+            // State Variables
+            cookingMembers: 1,
+            laundryKg: 1,
+
+            init() {
+                // Login Form
+                document.getElementById('login-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    
+                    try {
+                        const response = await fetch('http://localhost:5000/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, password })
+                        });
+                        
+                        const data = await response.json();
+                        if (!response.ok) {
+                            this.showToast(data.error || 'Login failed');
+                            return;
+                        }
+                        
+                        this.showToast('Login successful!');
+                        setTimeout(() => this.navigate('location-section'), 800);
+                    } catch (err) {
+                        this.showToast('Error connecting to server.');
+                    }
+                });
+
+                // Register Form
+                document.getElementById('register-form').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const name = document.getElementById('reg-name').value;
+                    const email = document.getElementById('reg-email').value;
+                    const password = document.getElementById('reg-password').value;
+                    
+                    try {
+                        const response = await fetch('http://localhost:5000/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, email, password })
+                        });
+                        
+                        const data = await response.json();
+                        if (!response.ok) {
+                            this.showToast(data.error || 'Registration failed');
+                            return;
+                        }
+                        
+                        this.showToast('Account Created successfully!');
+                        setTimeout(() => this.navigate('location-section'), 800);
+                    } catch (err) {
+                        this.showToast('Error connecting to server.');
+                    }
+                });
+
+                // Feedback Stars Logic
+                document.querySelectorAll('.star-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const group = e.target.parentElement;
+                        const val = parseInt(e.target.dataset.val);
+                        group.querySelectorAll('.star-btn').forEach(s => {
+                            if (parseInt(s.dataset.val) <= val) s.classList.add('active');
+                            else s.classList.remove('active');
+                        });
+                    });
+                });
+            },
+
+            navigate(screenId) {
+                document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+                document.getElementById(screenId).classList.add('active');
+                this.currentScreen = screenId;
+                if (screenId === 'cart-section') this.renderCart();
+                if (screenId === 'services-section') this.fetchFeedbacks();
+                if (screenId === 'payment-section') {
+                    document.getElementById('pay-total-amount').innerText = `₹${this.getCartTotal()}`;
+                }
+            },
+
+            detectLocation() {
+                const addrDiv = document.getElementById('detected-address');
+                addrDiv.style.display = "block";
+                addrDiv.innerHTML = "<i>Locating your city...</i>";
+
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(async (position) => {
+                        const { latitude, longitude } = position.coords;
+
+                        try {
+                            const res = await fetch(
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+                            );
+                            const data = await res.json();
+
+                            const city = data.address.city ||
+                                data.address.town ||
+                                data.address.village ||
+                                "Unknown Location";
+
+                            addrDiv.innerHTML = `
+                            <b style="color:var(--text-main);">📍 Current Location:</b><br>
+                            <span style="color:var(--success); font-weight:bold;">${city}</span><br>
+                            <small class="text-muted">${latitude.toFixed(4)}, ${longitude.toFixed(4)}</small>
+                        `;
+                        } catch (e) {
+                            addrDiv.innerHTML = `
+                            <b style="color:var(--text-main);">📍 Current Location:</b><br>
+                            <span style="color:var(--text-muted);">Lat: ${latitude.toFixed(2)}, Lon: ${longitude.toFixed(2)}</span>
+                        `;
+                        }
+                    }, () => {
+                        addrDiv.innerHTML = "<span class='text-muted'>Location permission denied.</span>";
+                    });
+                } else {
+                    addrDiv.innerHTML = "<span class='text-muted'>Geolocation not supported.</span>";
+                }
+            },
+
+            continueNext() {
+                const manualLocation = document.getElementById('user-location').value;
+                if (!manualLocation && document.getElementById('detected-address').style.display === "none") {
+                    this.showToast("Please select or detect your location!");
+                    return;
+                }
+                this.showToast("Location confirmed!");
+                setTimeout(() => this.navigate('services-section'), 800);
+            },
+
+            showToast(msg) {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-msg').innerText = msg;
+                toast.classList.remove('hidden');
+                toast.style.display = 'flex';
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                    toast.style.display = 'none';
+                }, 2500);
+            },
+
+            updateMembers(change) {
+                if (this.cookingMembers + change >= 1 && this.cookingMembers + change <= 50) {
+                    this.cookingMembers += change;
+                    document.getElementById('member-count').value = this.cookingMembers;
+                    // Extended Base price ₹150, plus ₹50 for each extra member
+                    let newPrice = 150 + ((this.cookingMembers - 1) * 50);
+                    document.getElementById('cooking-price').innerText = `₹${newPrice}`;
+                }
+            },
+
+            updateLaundry(change) {
+                if (this.laundryKg + change >= 1 && this.laundryKg + change <= 20) {
+                    this.laundryKg += change;
+                    document.getElementById('laundry-count').value = this.laundryKg;
+                    document.getElementById('laundry-price').innerText = `₹${this.laundryKg * 40}`;
+                }
+            },
+
+            calcCleaning() {
+                let total = 0;
+                document.querySelectorAll('.cleaning-task:checked').forEach(el => {
+                    total += parseInt(el.dataset.price);
+                });
+                document.getElementById('cleaning-price').innerText = `₹${total}`;
+                document.getElementById('btn-add-cleaning').disabled = total === 0;
+            },
+
+            calcPlumbing() {
+                let total = 0;
+                document.querySelectorAll('.plumbing-task:checked').forEach(el => {
+                    total += parseInt(el.dataset.price);
+                });
+                document.getElementById('plumbing-price').innerText = `₹${total}`;
+                document.getElementById('btn-add-plumbing').disabled = total === 0;
+            },
+
+            addToCart(serviceType) {
+                let item = { id: Date.now(), service: serviceType, tasks: [], price: 0, slot: '' };
+
+                if (serviceType === 'Cooking') {
+                    const isVeg = document.querySelector('input[name="food-type"]:checked').value;
+                    const members = this.cookingMembers;
+                    item.price = 150 + ((members - 1) * 50);
+                    item.tasks = [`${isVeg} Meal for ${members}`];
+                    item.slot = document.getElementById('cooking-slot').value;
+                }
+                if (serviceType === 'Laundry') {
+                    item.price = this.laundryKg * 40;
+                    item.tasks = [`Washing & Folding - ${this.laundryKg}kg`];
+                    item.slot = document.getElementById('laundry-slot').value;
+                }
+                if (serviceType === 'Cleaning') {
+                    document.querySelectorAll('.cleaning-task:checked').forEach(el => {
+                        item.tasks.push(el.value);
+                        item.price += parseInt(el.dataset.price);
+                        el.checked = false; // Reset
+                    });
+                    item.slot = document.getElementById('cleaning-slot').value;
+                    this.calcCleaning(); // Reset price display
+                }
+                if (serviceType === 'Plumbing') {
+                    document.querySelectorAll('.plumbing-task:checked').forEach(el => {
+                        item.tasks.push(el.value);
+                        item.price += parseInt(el.dataset.price);
+                        el.checked = false; // Reset
+                    });
+                    item.slot = document.getElementById('plumbing-slot').value;
+                    this.calcPlumbing(); // Reset price display
+                }
+
+                this.cart.push(item);
+                this.updateBadge();
+                this.showToast(`${serviceType} added to cart`);
+                this.navigate('services-section');
+            },
+
+            removeFromCart(id) {
+                this.cart = this.cart.filter(item => item.id !== id);
+                this.updateBadge();
+                this.renderCart();
+            },
+
+            updateBadge() {
+                const b = document.getElementById('cart-badge');
+                b.innerText = this.cart.length;
+                if (this.cart.length > 0) b.classList.remove('hidden');
+                else b.classList.add('hidden');
+            },
+
+            getCartTotal() {
+                return this.cart.reduce((sum, item) => sum + item.price, 0);
+            },
+
+            renderCart() {
+                const container = document.getElementById('cart-items-container');
+                const emptyMsg = document.getElementById('empty-cart-msg');
+                const summary = document.getElementById('cart-summary');
+
+                container.innerHTML = '';
+
+                if (this.cart.length === 0) {
+                    emptyMsg.classList.remove('hidden');
+                    summary.classList.add('hidden');
+                } else {
+                    emptyMsg.classList.add('hidden');
+                    summary.classList.remove('hidden');
+
+                    this.cart.forEach(item => {
+                        container.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-details">
+                                <div class="cart-item-title">${item.service}</div>
+                                <div class="cart-item-meta">${item.tasks.join(', ')}</div>
+                                <div class="cart-item-meta" style="color:var(--primary); font-weight:600;">
+                                    <i class="fa-regular fa-clock"></i> ${item.slot}
+                                </div>
+                                <button class="remove-btn" onclick="app.removeFromCart(${item.id})">Remove</button>
+                            </div>
+                            <div class="cart-item-price">₹${item.price}</div>
+                        </div>
+                    `;
+                    });
+                    document.getElementById('cart-total-amount').innerText = `₹${this.getCartTotal()}`;
+                }
+            },
+
+            handlePaymentMode() {
+                const mode = document.querySelector('input[name="payment-mode"]:checked').value;
+                const qrSec = document.getElementById('qr-code-section');
+                document.querySelectorAll('.pay-method-card').forEach(el => el.classList.remove('active'));
+
+                if (mode === 'upi') {
+                    document.getElementById('label-pay-upi').classList.add('active');
+                    qrSec.classList.remove('hidden');
+                } else {
+                    document.getElementById('label-pay-cash').classList.add('active');
+                    qrSec.classList.add('hidden');
+                }
+            },
+
+            processPayment() {
+                const popup = document.getElementById('payment-popup');
+                popup.classList.remove('hidden');
+            },
+
+            closePaymentPopup() {
+                document.getElementById('payment-popup').classList.add('hidden');
+                this.navigate('feedback-section');
+            },
+
+            async submitFeedback() {
+                const getRating = (groupName) => {
+                    const stars = document.querySelectorAll(`.stars[data-group="${groupName}"] .star-btn.active`);
+                    return stars.length > 0 ? parseInt(Array.from(stars).pop().dataset.val) : 0;
+                };
+                
+                const payload = {
+                    workRating: getRating('work'),
+                    satisfactionRating: getRating('satisfaction'),
+                    appRating: getRating('app'),
+                    remarks: document.getElementById('feedback-remarks').value
+                };
+
+                try {
+                    await fetch('http://localhost:5000/feedback', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                } catch(e) {
+                    console.log('Feedback post error', e);
+                }
+
+                this.showToast('Thank you for your feedback!');
+                setTimeout(() => {
+                    this.navigate('thankyou-section');
+                }, 1000);
+            },
+
+            async fetchFeedbacks() {
+                try {
+                    const res = await fetch('http://localhost:5000/feedback');
+                    const feedbacks = await res.json();
+                    const list = document.getElementById('reviews-list');
+                    if (!list) return;
+                    list.innerHTML = '';
+                    
+                    if (feedbacks.length === 0) {
+                        list.innerHTML = '<p class="text-muted">No reviews yet. Be the first!</p>';
+                        return;
+                    }
+
+                    feedbacks.forEach(fb => {
+                        const starsHTML = Array(fb.workRating || 5).fill('<i class="fa-solid fa-star" style="color:var(--warning); font-size: 12px;"></i>').join('');
+                        list.innerHTML += `
+                        <div class="glass-card" style="padding: 15px; border-radius: 16px;">
+                            <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                                <strong style="color:white; font-size: 15px;">Anonymous User</strong>
+                                <div style="display:flex; gap: 2px;">${starsHTML}</div>
+                            </div>
+                            <p style="font-size: 14px; margin-bottom: 10px; color: var(--text-main);">"${fb.remarks || 'No additional remarks.'}"</p>
+                            <small class="text-muted" style="font-size: 11px;">${new Date(fb.createdAt).toLocaleDateString()}</small>
+                        </div>
+                        `;
+                    });
+                } catch (err) {
+                    console.error('Error fetching feedbacks', err);
+                }
+            },
+
+            resetApp() {
+                this.cart = [];
+                this.updateBadge();
+                document.getElementById('login-form').reset();
+                document.getElementById('cooking-search').value = '';
+                document.getElementById('feedback-remarks').value = '';
+                document.querySelectorAll('.star-btn').forEach(el => el.classList.remove('active'));
+                this.navigate('login-section');
+            }
+        };
+
+        // Boot App
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+    </script>
+</body>
+
+</html> 
