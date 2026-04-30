@@ -1,0 +1,105 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const DB_URL = "mongodb://127.0.0.1:27017/mydb";
+
+// connect MongoDB
+mongoose.connect(DB_URL)
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(err));
+
+// schema
+const userSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true }
+});
+
+const User = mongoose.model("User", userSchema);
+
+const feedbackSchema = new mongoose.Schema({
+  workRating: Number,
+  satisfactionRating: Number,
+  appRating: Number,
+  remarks: String,
+  createdAt: { type: Date, default: Date.now }
+});
+
+const Feedback = mongoose.model("Feedback", feedbackSchema);
+
+// POST API - Register
+app.post("/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    
+    // Check if user exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "User already exists with this email." });
+    }
+
+    const newUser = await User.create({ name, email, password });
+    res.json({ message: "Registration successful!", user: { name: newUser.name, email: newUser.email } });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST API - Login
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    if (user.password !== password) {
+      return res.status(401).json({ error: "Incorrect password." });
+    }
+
+    res.json({ message: "Login successful!", user: { name: user.name, email: user.email } });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+// GET API
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST Feedback
+app.post("/feedback", async (req, res) => {
+  try {
+    const newFeedback = await Feedback.create(req.body);
+    res.json(newFeedback);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET Feedback
+app.get("/feedback", async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 }).limit(10);
+    res.json(feedbacks);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// server start
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
+});
